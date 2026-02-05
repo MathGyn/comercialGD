@@ -1,0 +1,201 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Mobile-first optimizations */
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+/* Safe area support for notched devices */
+body {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 2%;
+    --foreground: 0 0% 100%;
+
+    --card: 0 0% 9%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 7%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 2%;
+
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%;
+
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 4% 20%;
+    --input: 240 4% 16%;
+    --ring: 0 0% 100%;
+
+    --radius: 1rem;
+
+    /* Custom architectural tokens */
+    --surface-elevated: 0 0% 11%;
+    --surface-glass: 0 0% 100% / 0.05;
+    --surface-glass-border: 0 0% 100% / 0.1;
+    --text-secondary: 240 5% 65%;
+    --text-tertiary: 240 5% 45%;
+    
+    /* Touch feedback */
+    --touch-active: 0 0% 100% / 0.08;
+    --touch-highlight: 0 0% 100% / 0.12;
+
+    /* Status colors */
+    --status-launch: 160 84% 39%;
+    --status-construction: 37 91% 55%;
+    --status-ready: 210 100% 50%;
+    --status-sold: 0 0% 45%;
+
+    --sidebar-background: 0 0% 5%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 0 0% 2%;
+    --sidebar-accent: 240 4% 16%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 240 4% 20%;
+    --sidebar-ring: 0 0% 100%;
+  }
+
+  .dark {
+    --background: 0 0% 2%;
+    --foreground: 0 0% 100%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Hide scrollbar for touch-native feel */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Snap scroll for carousels */
+  .snap-x-mandatory {
+    scroll-snap-type: x mandatory;
+  }
+  .snap-start {
+    scroll-snap-align: start;
+  }
+}
+
+@layer components {
+  /* Frosted glass effect */
+  .glass {
+    @apply bg-[hsl(var(--surface-glass))] backdrop-blur-xl border border-[hsl(var(--surface-glass-border))];
+  }
+
+  /* Tactile card press effect */
+  .tactile-press {
+    @apply transition-transform duration-150 ease-out active:scale-[0.97];
+  }
+
+  /* Status badges */
+  .badge-launch {
+    @apply bg-[hsl(var(--status-launch))] text-white;
+  }
+  .badge-construction {
+    @apply bg-[hsl(var(--status-construction))] text-black;
+  }
+  .badge-ready {
+    @apply bg-[hsl(var(--status-ready))] text-white;
+  }
+  .badge-sold {
+    @apply bg-[hsl(var(--status-sold))] text-white;
+  }
+
+  /* Centralizar sessões no desktop (exceto HeroSection que deve ocupar toda largura) */
+  @media (min-width: 768px) {
+    section[id] {
+      @apply max-w-7xl mx-auto;
+    }
+  }
+}
+
+/* React Easy Crop Styles */
+.reactEasyCrop_Container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  user-select: none;
+  touch-action: none;
+  cursor: move;
+}
+
+.reactEasyCrop_Image {
+  max-width: unset !important;
+  max-height: unset !important;
+}
+
+.reactEasyCrop_CropArea {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 0 9999em rgba(0, 0, 0, 0.5);
+  box-sizing: border-box;
+}
+
+.reactEasyCrop_CropAreaGrid::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 33.3333%;
+  left: 0;
+  right: 0;
+  bottom: 33.3333%;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.reactEasyCrop_CropAreaGrid::after {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 33.3333%;
+  right: 33.3333%;
+  bottom: 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.5);
+  border-right: 1px solid rgba(255, 255, 255, 0.5);
+}

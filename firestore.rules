@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function para verificar se o usuário está autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function para verificar se o usuário é admin
+    // Usa Custom Claims definidos via Firebase Admin SDK
+    // Para definir um usuário como admin, execute: npm run set:admin <email>
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.admin == true;
+    }
+    
+    // Regras para Banners
+    match /banners/{bannerId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Regras para Links Úteis
+    match /quickLinks/{linkId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Regras para Localizações
+    match /locations/{locationId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Regras para Membros da Equipe
+    match /teamMembers/{memberId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Regras para Contatos de Empreendimentos
+    match /developmentContacts/{contactId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Regras para Projetos (Portfólio)
+    match /projects/{projectId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+    
+    // Regras para Configurações Gerais
+    match /settings/{settingId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Regras para Atendimento ao Cliente
+    match /customerService/{serviceId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Regras para Rate Limits (usado pelas Cloud Functions)
+    // Apenas Cloud Functions podem escrever (via Admin SDK)
+    // Usuários autenticados podem ler seus próprios registros
+    match /rateLimits/{rateLimitId} {
+      allow read: if isAuthenticated() && 
+                     request.auth.uid == resource.data.uid;
+      // Cloud Functions escrevem via Admin SDK (bypass das regras)
+      allow write: if false; // Bloqueado para clientes, apenas Admin SDK
+    }
+    
+    // Negar acesso a qualquer outra coleção não especificada
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
