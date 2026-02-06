@@ -2,10 +2,21 @@ import { motion } from 'framer-motion';
 import { Navigation, MapPin } from 'lucide-react';
 import { useLocations } from '@/hooks/useFirestore';
 import type { Location } from '@/types/firebase';
+import { generateMapEmbedUrl, isValidUrl } from '@/utils/maps';
 
 const LocationCard = ({ location, index }: { location: Location; index: number }) => {
-  // Create Google Maps embed URL
-  const mapEmbedUrl = `https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3000!2d${location.lng}!3d${location.lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1spt-BR!2sbr!4v1704067200000!5m2!1spt-BR!2sbr`;
+  // Gera URL de embed com sistema de prioridades inteligente
+  const mapEmbedUrl = generateMapEmbedUrl(
+    location.address,
+    location.mapsLink,
+    location.lat,
+    location.lng
+  );
+
+  // Valida se os links estão preenchidos
+  const hasWazeLink = isValidUrl(location.wazeLink);
+  const hasMapsLink = isValidUrl(location.mapsLink);
+  const hasAnyLink = hasWazeLink || hasMapsLink;
 
   return (
     <motion.div
@@ -42,30 +53,36 @@ const LocationCard = ({ location, index }: { location: Location; index: number }
             <p className="text-[13px] text-muted-foreground mt-1 leading-snug">{location.address}</p>
           </div>
         </div>
-        
-        {/* CTA Buttons */}
-        <div className="flex gap-2">
-          <motion.a
-            whileTap={{ scale: 0.97 }}
-            href={location.wazeLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 h-12 flex items-center justify-center gap-2 bg-secondary hover:bg-secondary/80 rounded-xl text-[13px] font-medium transition-colors"
-          >
-            <Navigation className="w-4 h-4" />
-            Waze
-          </motion.a>
-          <motion.a
-            whileTap={{ scale: 0.97 }}
-            href={location.mapsLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 h-12 flex items-center justify-center gap-2 bg-secondary hover:bg-secondary/80 rounded-xl text-[13px] font-medium transition-colors"
-          >
-            <MapPin className="w-4 h-4" />
-            Maps
-          </motion.a>
-        </div>
+
+        {/* CTA Buttons - Exibição condicional */}
+        {hasAnyLink && (
+          <div className="flex gap-2">
+            {hasWazeLink && (
+              <motion.a
+                whileTap={{ scale: 0.97 }}
+                href={location.wazeLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${hasMapsLink ? 'flex-1' : 'w-full'} h-12 flex items-center justify-center gap-2 bg-secondary hover:bg-secondary/80 rounded-xl text-[13px] font-medium transition-colors`}
+              >
+                <Navigation className="w-4 h-4" />
+                Waze
+              </motion.a>
+            )}
+            {hasMapsLink && (
+              <motion.a
+                whileTap={{ scale: 0.97 }}
+                href={location.mapsLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${hasWazeLink ? 'flex-1' : 'w-full'} h-12 flex items-center justify-center gap-2 bg-secondary hover:bg-secondary/80 rounded-xl text-[13px] font-medium transition-colors`}
+              >
+                <MapPin className="w-4 h-4" />
+                Maps
+              </motion.a>
+            )}
+          </div>
+        )}
       </div>
     </motion.div>
   );
