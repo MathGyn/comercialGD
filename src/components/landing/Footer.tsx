@@ -4,12 +4,12 @@ const Footer = () => {
   return (
     <footer className="py-10 px-5 mt-4">
       <div className="max-w-7xl mx-auto">
-        {/* Logos das empresas parceiras */}
+        {/* Logo da Gama Dias */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex flex-wrap items-center justify-center gap-8 md:gap-12 mb-8 pb-8 border-b border-border/30"
+          className="flex items-center justify-center mb-8 pb-8 border-b border-border/30"
         >
           <a
             href="https://gamadias.com.br"
@@ -20,31 +20,7 @@ const Footer = () => {
             <img
               src="/Gama Dias.svg"
               alt="Gama Dias"
-              className="h-12 md:h-16 w-auto object-contain grayscale hover:grayscale-0 transition-all"
-            />
-          </a>
-          <a
-            href="https://etica.com.br"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="opacity-60 hover:opacity-100 transition-opacity"
-          >
-            <img
-              src="/Etica.svg"
-              alt="Ética"
-              className="h-6 md:h-8 w-auto object-contain grayscale hover:grayscale-0 transition-all"
-            />
-          </a>
-          <a
-            href="https://temazec.com.br"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="opacity-60 hover:opacity-100 transition-opacity"
-          >
-            <img
-              src="/Temazec.svg"
-              alt="Temazec"
-              className="h-6 md:h-8 w-auto object-contain grayscale hover:grayscale-0 transition-all"
+              className="h-16 md:h-20 w-auto object-contain grayscale hover:grayscale-0 transition-all"
             />
           </a>
         </motion.div>

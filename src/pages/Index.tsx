@@ -8,7 +8,7 @@ import LinksSection from '@/components/landing/LinksSection';
 import CustomerServiceSection from '@/components/landing/CustomerServiceSection';
 import MapSection from '@/components/landing/MapSection';
 import TeamSection from '@/components/landing/TeamSection';
-import ContactAccordion from '@/components/landing/ContactAccordion';
+// import ContactAccordion from '@/components/landing/ContactAccordion';
 import Footer from '@/components/landing/Footer';
 
 const Index = () => {
@@ -80,13 +80,13 @@ const Index = () => {
         <MapSection />
       </div>
 
-      {/* Customer Service Section */}
+      {/* Customer Service Section - SUPORTE: Atendimento ao Cliente */}
       <CustomerServiceSection />
 
-      {/* Contacts Accordion */}
-      <div ref={contactsRef}>
+      {/* Contacts Accordion - ATENDIMENTO: Contato direto - DESATIVADO */}
+      {/* <div ref={contactsRef}>
         <ContactAccordion />
-      </div>
+      </div> */}
 
       {/* Footer */}
       <Footer />

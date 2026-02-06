@@ -14,62 +14,122 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.token.admin == true;
     }
     
-    // Regras para Banners
+    // ========================================
+    // REGRAS PARA APLICAÇÃO ORIGINAL
+    // ========================================
+
+    // Regras para Banners (aplicação original)
     match /banners/{bannerId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
     }
-    
-    // Regras para Links Úteis
+
+    // Regras para Links Úteis (aplicação original)
     match /quickLinks/{linkId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
     }
-    
-    // Regras para Localizações
+
+    // Regras para Localizações (aplicação original)
     match /locations/{locationId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
     }
-    
-    // Regras para Membros da Equipe
+
+    // Regras para Membros da Equipe (aplicação original)
     match /teamMembers/{memberId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
     }
-    
-    // Regras para Contatos de Empreendimentos
+
+    // Regras para Contatos de Empreendimentos (aplicação original)
     match /developmentContacts/{contactId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
     }
-    
-    // Regras para Projetos (Portfólio)
+
+    // Regras para Projetos (Portfólio) (aplicação original)
     match /projects/{projectId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
     }
-    
-    // Regras para Configurações Gerais
+
+    // Regras para Configurações Gerais (aplicação original)
     match /settings/{settingId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
     }
 
-    // Regras para Atendimento ao Cliente
+    // Regras para Atendimento ao Cliente (aplicação original)
     match /customerService/{serviceId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
     }
 
-    // Regras para Rate Limits (usado pelas Cloud Functions)
-    // Apenas Cloud Functions podem escrever (via Admin SDK)
-    // Usuários autenticados podem ler seus próprios registros
+    // Regras para Rate Limits (aplicação original)
     match /rateLimits/{rateLimitId} {
-      allow read: if isAuthenticated() && 
+      allow read: if isAuthenticated() &&
                      request.auth.uid == resource.data.uid;
-      // Cloud Functions escrevem via Admin SDK (bypass das regras)
-      allow write: if false; // Bloqueado para clientes, apenas Admin SDK
+      allow write: if false;
+    }
+
+    // ========================================
+    // REGRAS PARA APLICAÇÃO GAMA DIAS (_GD)
+    // ========================================
+
+    // Regras para Banners GD
+    match /banners_GD/{bannerId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Regras para Links Úteis GD
+    match /quickLinks_GD/{linkId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Regras para Localizações GD
+    match /locations_GD/{locationId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Regras para Membros da Equipe GD
+    match /teamMembers_GD/{memberId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Regras para Contatos de Empreendimentos GD
+    match /developmentContacts_GD/{contactId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Regras para Projetos (Portfólio) GD
+    match /projects_GD/{projectId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Regras para Configurações Gerais GD
+    match /settings_GD/{settingId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Regras para Atendimento ao Cliente GD
+    match /customerService_GD/{serviceId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // Regras para Rate Limits GD
+    match /rateLimits_GD/{rateLimitId} {
+      allow read: if isAuthenticated() &&
+                     request.auth.uid == resource.data.uid;
+      allow write: if false;
     }
     
     // Negar acesso a qualquer outra coleção não especificada

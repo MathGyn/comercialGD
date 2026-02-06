@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Plus, Trash2, ExternalLink, Image, MapPin, Users, Link2, ChevronDown, Settings, LogOut, Loader2, Building, UserCircle, Headset, MessageCircle } from 'lucide-react';
+import { Save, Plus, Trash2, ExternalLink, Image, MapPin, Users, Link2, ChevronDown, LogOut, Loader2, Building, UserCircle, Headset, MessageCircle } from 'lucide-react';
 import { ImageUpload } from '@/components/admin/ImageUpload';
 import { DebouncedInput } from '@/components/admin/DebouncedInput';
 import { SortableList } from '@/components/admin/SortableList';
@@ -34,7 +34,6 @@ const AdminPanel = () => {
   const { data: customerServices, loading: servicesLoading, add: addService, update: updateService, remove: removeService } = useCustomerService({ realtime: true });
   
   const [settings, setSettings] = useState({
-    driveLink: '',
     whatsappPhone: '',
     whatsappMessage: '',
   });
@@ -49,7 +48,6 @@ const AdminPanel = () => {
         const settingsData = await settingsCollection.get();
         if (settingsData) {
           setSettings({
-            driveLink: settingsData.driveLink || '',
             whatsappPhone: settingsData.whatsappPhone || '',
             whatsappMessage: settingsData.whatsappMessage || 'Olá! Gostaria de mais informações.',
           });
@@ -350,7 +348,6 @@ const AdminPanel = () => {
     try {
       console.log('Salvando configurações...', settings);
       await settingsCollection.update({
-        driveLink: settings.driveLink,
         whatsappPhone: settings.whatsappPhone,
         whatsappMessage: settings.whatsappMessage,
       });
@@ -463,10 +460,6 @@ const AdminPanel = () => {
                 <MessageCircle className="w-4 h-4 shrink-0" />
                 <span className="hidden md:inline text-xs whitespace-nowrap">Botão Contato</span>
               </TabsTrigger>
-              <TabsTrigger value="settings" className="flex items-center gap-1.5 px-3 py-2">
-                <Settings className="w-4 h-4 shrink-0" />
-                <span className="hidden md:inline text-xs whitespace-nowrap">Drive Geral</span>
-              </TabsTrigger>
               <TabsTrigger value="account" className="flex items-center gap-1.5 px-3 py-2">
                 <UserCircle className="w-4 h-4 shrink-0" />
                 <span className="hidden md:inline text-xs whitespace-nowrap">Conta</span>
@@ -514,55 +507,6 @@ const AdminPanel = () => {
                     />
                     <p className="text-xs text-muted-foreground">
                       Mensagem que aparecerá automaticamente no WhatsApp
-                    </p>
-                  </div>
-
-                  <Button
-                    onClick={handleSaveSettings}
-                    disabled={saving}
-                    className="w-full sm:w-auto"
-                  >
-                    {saving ? (
-                      <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Salvando...
-                      </>
-                    ) : (
-                      <>
-                        <Save className="w-4 h-4 mr-2" />
-                        Salvar Configurações
-                      </>
-                    )}
-                  </Button>
-                </div>
-              </motion.div>
-            </TabsContent>
-
-            {/* Settings Tab - Drive Geral */}
-            <TabsContent value="settings" className="space-y-4">
-              <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
-                Drive Geral
-              </h2>
-
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="p-4 bg-card rounded-xl border border-border/50"
-              >
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>Link do Drive Geral</Label>
-                    <DebouncedInput
-                      value={settings.driveLink || ''}
-                      onSave={async (value) => {
-                        setSettings({ ...settings, driveLink: value });
-                        await settingsCollection.update({ driveLink: value });
-                      }}
-                      className="bg-secondary border-0"
-                      placeholder="https://drive.google.com/drive/folders/..."
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      Este link aparece como botão logo após o banner principal
                     </p>
                   </div>
 

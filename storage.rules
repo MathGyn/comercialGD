@@ -7,19 +7,41 @@ service firebase.storage {
       return request.auth != null && request.auth.token.admin == true;
     }
     
-    // Regras para a pasta de banners
+    // ========================================
+    // REGRAS PARA APLICAÇÃO ORIGINAL
+    // ========================================
+
+    // Regras para a pasta de banners (aplicação original)
     match /banners/{allPaths=**} {
-      // Permite leitura pública de imagens
       allow read: if true;
-      // Apenas admins podem fazer upload
       allow write: if isAdmin();
     }
-    
-    // Regras para outras pastas (team, etc)
-    match /{allPaths=**} {
-      // Permite leitura pública
+
+    // Regras para a pasta de team (aplicação original)
+    match /team/{allPaths=**} {
       allow read: if true;
-      // Apenas admins podem fazer upload
+      allow write: if isAdmin();
+    }
+
+    // ========================================
+    // REGRAS PARA APLICAÇÃO GAMA DIAS (_GD)
+    // ========================================
+
+    // Regras para a pasta de banners GD
+    match /banners_GD/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Regras para a pasta de team GD
+    match /team_GD/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Regras para outras pastas
+    match /{allPaths=**} {
+      allow read: if true;
       allow write: if isAdmin();
     }
   }

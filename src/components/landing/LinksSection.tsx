@@ -1,8 +1,6 @@
 import { motion } from 'framer-motion';
 import { ExternalLink, Instagram, Facebook, Youtube, Globe, FileText, FolderOpen } from 'lucide-react';
 import { useQuickLinks } from '@/hooks/useFirestore';
-import { settingsCollection } from '@/lib/firestore-helpers';
-import { useEffect, useState } from 'react';
 
 const iconMap: Record<string, React.ReactNode> = {
   instagram: <Instagram className="w-5 h-5" />,
@@ -15,27 +13,11 @@ const iconMap: Record<string, React.ReactNode> = {
 
 const LinksSection = () => {
   const { data: quickLinks, loading } = useQuickLinks({ realtime: true });
-  const [driveLink, setDriveLink] = useState('');
-
-  useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        const settings = await settingsCollection.get();
-        if (settings && settings.driveLink) {
-          setDriveLink(settings.driveLink);
-        }
-      } catch (error) {
-        console.error('Erro ao carregar settings:', error);
-      }
-    };
-    loadSettings();
-  }, []);
 
   if (loading) return null;
-  if ((!quickLinks || quickLinks.length === 0) && !driveLink) return null;
+  if (!quickLinks || quickLinks.length === 0) return null;
 
-  const allLinks = quickLinks || [];
-  const [featuredLink, ...otherLinks] = allLinks;
+  const [featuredLink, ...otherLinks] = quickLinks;
 
   return (
     <section id="links" className="py-10">
@@ -62,9 +44,9 @@ const LinksSection = () => {
         {/* Layout: Mobile tem featured separado, Desktop em grid único */}
 
         {/* Featured Link apenas no mobile - Primeira linha */}
-        {(featuredLink || driveLink) && (
+        {featuredLink && (
           <motion.a
-            href={featuredLink?.url || driveLink}
+            href={featuredLink.url}
             target="_blank"
             rel="noopener noreferrer"
             initial={{ opacity: 0, y: 16 }}
@@ -86,11 +68,11 @@ const LinksSection = () => {
           >
             <div className="text-center w-full">
               <p className="text-[22px] font-bold leading-tight text-gray-900 dark:text-gray-50 mb-1.5">
-                {featuredLink?.title || 'Drive Geral'}
+                {featuredLink.title}
               </p>
-              {(featuredLink?.description || driveLink) && (
+              {featuredLink.description && (
                 <p className="text-[15px] text-gray-600 dark:text-gray-400 leading-tight line-clamp-2">
-                  {featuredLink?.description || 'Acesse todos os materiais'}
+                  {featuredLink.description}
                 </p>
               )}
             </div>
@@ -100,9 +82,9 @@ const LinksSection = () => {
         {/* Grid unificado - Desktop: todos juntos / Mobile: só os outros */}
         <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
           {/* Featured Link - apenas desktop */}
-          {(featuredLink || driveLink) && (
+          {featuredLink && (
             <motion.a
-              href={featuredLink?.url || driveLink}
+              href={featuredLink.url}
               target="_blank"
               rel="noopener noreferrer"
               initial={{ opacity: 0, y: 16 }}
@@ -124,11 +106,11 @@ const LinksSection = () => {
             >
               <div className="text-center w-full">
                 <p className="text-[22px] font-bold leading-tight text-gray-900 dark:text-gray-50 mb-1.5">
-                  {featuredLink?.title || 'Drive Geral'}
+                  {featuredLink.title}
                 </p>
-                {(featuredLink?.description || driveLink) && (
+                {featuredLink.description && (
                   <p className="text-[15px] text-gray-600 dark:text-gray-400 leading-tight line-clamp-2">
-                    {featuredLink?.description || 'Acesse todos os materiais'}
+                    {featuredLink.description}
                   </p>
                 )}
               </div>
