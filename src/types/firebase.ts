@@ -20,7 +20,8 @@ export interface QuickLink {
   title: string;
   description?: string;
   url: string;
-  icon: string;
+  icon?: string;
+  iconUrl?: string;
   order: number;
   createdAt?: Timestamp;
   updatedAt?: Timestamp;
@@ -81,9 +82,7 @@ export interface GeneralSettings {
 }
 
 // Tipo para usuário autenticado
-export interface AuthUser extends User {
-  // Adicione campos customizados do usuário aqui se necessário
-}
+export type AuthUser = User;
 
 // Helper type para converter Firestore Timestamp para Date
 export type WithDates<T> = Omit<T, 'createdAt' | 'updatedAt'> & {

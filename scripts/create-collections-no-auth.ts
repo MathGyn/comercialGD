@@ -74,6 +74,8 @@ async function createCollections() {
         description: "Descrição do link",
         url: "https://example.com",
         icon: "default",
+        iconUrl: "",
+        order: 1,
         createdAt: now,
         updatedAt: now,
       });

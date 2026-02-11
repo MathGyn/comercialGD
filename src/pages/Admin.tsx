@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Save, Plus, Trash2, ExternalLink, Image, MapPin, Users, Link2, ChevronDown, LogOut, Loader2, Building, UserCircle, Headset, MessageCircle } from 'lucide-react';
 import { ImageUpload } from '@/components/admin/ImageUpload';
+import { IconUpload } from '@/components/admin/IconUpload';
 import { DebouncedInput } from '@/components/admin/DebouncedInput';
 import { SortableList } from '@/components/admin/SortableList';
 import { useAuth } from '@/hooks/useAuth';
@@ -77,15 +78,6 @@ const AdminPanel = () => {
     return <LoginForm />;
   }
 
-  const iconOptions = [
-    { value: 'instagram', label: 'Instagram' },
-    { value: 'facebook', label: 'Facebook' },
-    { value: 'youtube', label: 'YouTube' },
-    { value: 'website', label: 'Website' },
-    { value: 'document', label: 'Documento' },
-    { value: 'default', label: 'Link Externo' },
-  ];
-
   // Banner handlers
   const handleAddBanner = async () => {
     try {
@@ -142,6 +134,7 @@ const AdminPanel = () => {
         description: '',
         url: 'https://',
         icon: 'default',
+        iconUrl: '',
         order: (links?.length || 0) + 1,
       };
       const id = await addLink(newLink);
@@ -163,7 +156,7 @@ const AdminPanel = () => {
     }
   };
 
-  const handleUpdateLink = async (id: string, field: keyof QuickLink, value: string) => {
+  const handleUpdateLink = async (id: string, field: keyof QuickLink, value: string | number) => {
     try {
       await updateLink(id, { [field]: value });
     } catch (error: any) {
@@ -755,12 +748,18 @@ const AdminPanel = () => {
                     <ItemCard
                       key={link.id}
                       id={link.id}
-                      icon={<ExternalLink className="w-4 h-4" />}
+                      icon={
+                        link.iconUrl ? (
+                          <img src={link.iconUrl} alt={link.title} className="w-6 h-6 object-contain" />
+                        ) : (
+                          <ExternalLink className="w-4 h-4" />
+                        )
+                      }
                       title={link.title}
                       subtitle={link.url}
                       onDelete={() => handleDeleteLink(link.id)}
                     >
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <Label>Título</Label>
                           <DebouncedInput
@@ -769,25 +768,13 @@ const AdminPanel = () => {
                             className="bg-secondary border-0"
                           />
                         </div>
-                        <div className="space-y-2">
-                          <Label>Ícone</Label>
-                          <Select
-                            value={link.icon}
-                            onValueChange={(value) => handleUpdateLink(link.id, 'icon', value)}
-                          >
-                            <SelectTrigger className="bg-secondary border-0">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {iconOptions.map(option => (
-                                <SelectItem key={option.value} value={option.value}>
-                                  {option.label}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </div>
                       </div>
+                      <IconUpload
+                        label="Ícone do Card (PNG sem fundo ou SVG)"
+                        currentUrl={link.iconUrl}
+                        onUploadComplete={(url) => handleUpdateLink(link.id, 'iconUrl', url)}
+                        onRemove={() => handleUpdateLink(link.id, 'iconUrl', '')}
+                      />
                       <div className="space-y-2">
                         <Label>URL</Label>
                         <DebouncedInput
@@ -801,6 +788,15 @@ const AdminPanel = () => {
                         <DebouncedInput
                           value={link.description || ''}
                           onSave={(value) => handleUpdateLink(link.id, 'description', value)}
+                          className="bg-secondary border-0"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label>Ordem</Label>
+                        <DebouncedInput
+                          type="number"
+                          value={String(link.order || 1)}
+                          onSave={(value) => handleUpdateLink(link.id, 'order', parseInt(value) || 1)}
                           className="bg-secondary border-0"
                         />
                       </div>

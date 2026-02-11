@@ -232,7 +232,8 @@ export interface QuickLink {
   title: string;
   description?: string;
   url: string;
-  icon: string;
+  icon?: string;
+  iconUrl?: string;
 }
 
 export const quickLinks: QuickLink[] = [

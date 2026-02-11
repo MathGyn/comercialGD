@@ -1,14 +1,14 @@
 import { motion } from 'framer-motion';
-import { ExternalLink, Instagram, Facebook, Youtube, Globe, FileText, FolderOpen } from 'lucide-react';
+import { ExternalLink, Instagram, Facebook, Youtube, Globe, FileText, type LucideIcon } from 'lucide-react';
 import { useQuickLinks } from '@/hooks/useFirestore';
 
-const iconMap: Record<string, React.ReactNode> = {
-  instagram: <Instagram className="w-5 h-5" />,
-  facebook: <Facebook className="w-5 h-5" />,
-  youtube: <Youtube className="w-5 h-5" />,
-  website: <Globe className="w-5 h-5" />,
-  document: <FileText className="w-5 h-5" />,
-  default: <ExternalLink className="w-5 h-5" />,
+const fallbackIconMap: Record<string, LucideIcon> = {
+  instagram: Instagram,
+  facebook: Facebook,
+  youtube: Youtube,
+  website: Globe,
+  document: FileText,
+  default: ExternalLink,
 };
 
 const LinksSection = () => {
@@ -18,6 +18,37 @@ const LinksSection = () => {
   if (!quickLinks || quickLinks.length === 0) return null;
 
   const [featuredLink, ...otherLinks] = quickLinks;
+
+  const renderFallbackIcon = (iconKey: string | undefined, sizeClass: string) => {
+    const Icon = fallbackIconMap[iconKey || 'default'] || fallbackIconMap.default;
+    return <Icon className={sizeClass} aria-hidden="true" />;
+  };
+
+  const renderLinkIcon = (
+    iconUrl: string | undefined,
+    iconKey: string | undefined,
+    mode: 'dark' | 'light',
+    sizeClass: string
+  ) => {
+    if (iconUrl) {
+      const filterClass =
+        mode === 'dark'
+          ? '[filter:grayscale(100%)_brightness(0)]'
+          : '[filter:brightness(0)_invert(1)]';
+
+      return (
+        <img
+          src={iconUrl}
+          alt=""
+          className={`${sizeClass} object-contain ${filterClass}`}
+          loading="lazy"
+          aria-hidden="true"
+        />
+      );
+    }
+
+    return renderFallbackIcon(iconKey, sizeClass);
+  };
 
   return (
     <section id="links" className="py-10">
@@ -61,11 +92,14 @@ const LinksSection = () => {
               scale: {
                 duration: 1.5,
                 repeat: Infinity,
-                ease: "easeInOut"
-              }
+                ease: 'easeInOut'
+              },
             }}
             className="flex md:hidden flex-col items-center justify-center p-6 bg-white dark:bg-white/5 rounded-[20px] border border-gray-200 dark:border-gray-700 hover:border-primary/40 dark:hover:border-primary/40 transition-all shadow-md hover:shadow-lg group w-full h-[140px] mb-3"
           >
+            <div className="text-black dark:text-white mb-2.5 flex-shrink-0">
+              {renderLinkIcon(featuredLink?.iconUrl, featuredLink?.icon, 'dark', 'w-11 h-11')}
+            </div>
             <div className="text-center w-full">
               <p className="text-[22px] font-bold leading-tight text-gray-900 dark:text-gray-50 mb-1.5">
                 {featuredLink.title}
@@ -99,11 +133,14 @@ const LinksSection = () => {
                 scale: {
                   duration: 1.5,
                   repeat: Infinity,
-                  ease: "easeInOut"
-                }
+                  ease: 'easeInOut'
+                },
               }}
               className="hidden md:flex flex-col items-center justify-center p-5 bg-white dark:bg-white/5 rounded-[20px] border border-gray-200 dark:border-gray-700 hover:border-primary/40 dark:hover:border-primary/40 transition-all shadow-md hover:shadow-lg group aspect-square"
             >
+              <div className="text-black dark:text-white mb-2.5 flex-shrink-0">
+                {renderLinkIcon(featuredLink?.iconUrl, featuredLink?.icon, 'dark', 'w-12 h-12')}
+              </div>
               <div className="text-center w-full">
                 <p className="text-[22px] font-bold leading-tight text-gray-900 dark:text-gray-50 mb-1.5">
                   {featuredLink.title}
@@ -132,8 +169,8 @@ const LinksSection = () => {
               whileTap={{ scale: 0.98 }}
               className="flex flex-col items-center justify-center gap-2 p-3 bg-[#6d6b6b] dark:bg-[#6d6b6b] rounded-[20px] border border-gray-600/50 dark:border-gray-600/50 hover:border-gray-500 dark:hover:border-gray-500 hover:bg-[#7d7b7b] dark:hover:bg-[#7d7b7b] transition-all group aspect-square w-full"
             >
-              <div className="w-10 h-10 md:w-12 md:h-12 rounded-[14px] bg-white/20 dark:bg-white/20 flex items-center justify-center text-white group-hover:text-primary dark:group-hover:text-primary transition-colors shadow-sm flex-shrink-0">
-                {iconMap[link.icon] || iconMap.default}
+              <div className="text-white transition-colors flex-shrink-0">
+                {renderLinkIcon(link.iconUrl, link.icon, 'light', 'w-9 h-9 md:w-11 md:h-11')}
               </div>
 
               <div className="text-center w-full flex-shrink-0">
